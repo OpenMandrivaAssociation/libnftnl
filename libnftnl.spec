@@ -43,14 +43,13 @@ This package contains the development files for %{name}.
 %apply_patches
 rm -rf examples
 sed -i 's!examples!!g' Makefile.am
+sed -i 's!tests!!g' Makefile.am
 sed -i 's!examples/Makefile!!g' configure.ac
+sed -i 's!tests/Makefile!!g' configure.ac
 
 %build
 %configure --disable-static
 %make
-
-%check
-%make check
 
 %install
 %makeinstall_std
