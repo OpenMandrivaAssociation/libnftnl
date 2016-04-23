@@ -41,6 +41,9 @@ This package contains the development files for %{name}.
 %prep
 %setup -q
 %apply_patches
+rm -rf examples
+sed -i 's!examples!!g' Makefile.am
+sed -i 's!examples/Makefile!!g' configure.ac
 
 %build
 %configure --disable-static
