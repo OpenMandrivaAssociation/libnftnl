@@ -1,21 +1,21 @@
 diff --git a/include/expr_ops.h b/include/expr_ops.h
-index cecad95..0bbc0e1 100644
+index 3c0cb18..f3ebef0 100644
 --- a/include/expr_ops.h
 +++ b/include/expr_ops.h
 @@ -17,7 +17,7 @@ struct expr_ops {
  	const void *(*get)(const struct nftnl_expr *e, uint16_t type, uint32_t *data_len);
  	int 	(*parse)(struct nftnl_expr *e, struct nlattr *attr);
- 	void	(*build)(struct nlmsghdr *nlh, struct nftnl_expr *e);
--	int	(*snprintf)(char *buf, size_t len, uint32_t type, uint32_t flags, struct nftnl_expr *e);
-+	int	(*snprintf_)(char *buf, size_t len, uint32_t type, uint32_t flags, struct nftnl_expr *e);
+ 	void	(*build)(struct nlmsghdr *nlh, const struct nftnl_expr *e);
+-	int	(*snprintf)(char *buf, size_t len, uint32_t type, uint32_t flags, const struct nftnl_expr *e);
++	int	(*snprintf_)(char *buf, size_t len, uint32_t type, uint32_t flags, const struct nftnl_expr *e);
  	int	(*xml_parse)(struct nftnl_expr *e, mxml_node_t *tree,
  			     struct nftnl_parse_err *err);
  	int	(*json_parse)(struct nftnl_expr *e, json_t *data,
 diff --git a/src/expr.c b/src/expr.c
-index 3249a5c..1139875 100644
+index ed07dc4..b07337c 100644
 --- a/src/expr.c
 +++ b/src/expr.c
-@@ -268,7 +268,7 @@ int nftnl_expr_snprintf(char *buf, size_t size, struct nftnl_expr *expr,
+@@ -268,7 +268,7 @@ int nftnl_expr_snprintf(char *buf, size_t size, const struct nftnl_expr *expr,
  	int ret;
  	unsigned int offset = 0, len = size;
  
@@ -25,7 +25,7 @@ index 3249a5c..1139875 100644
  
  	return offset;
 diff --git a/src/expr/bitwise.c b/src/expr/bitwise.c
-index a18aad5..ff095ad 100644
+index 2fd4b74..532726d 100644
 --- a/src/expr/bitwise.c
 +++ b/src/expr/bitwise.c
 @@ -318,7 +318,7 @@ struct expr_ops expr_ops_bitwise = {
@@ -38,7 +38,7 @@ index a18aad5..ff095ad 100644
  	.json_parse	= nftnl_expr_bitwise_json_parse,
  };
 diff --git a/src/expr/byteorder.c b/src/expr/byteorder.c
-index f16bbf7..ba1ad55 100644
+index ca697cf..3423a3e 100644
 --- a/src/expr/byteorder.c
 +++ b/src/expr/byteorder.c
 @@ -334,7 +334,7 @@ struct expr_ops expr_ops_byteorder = {
@@ -51,7 +51,7 @@ index f16bbf7..ba1ad55 100644
  	.json_parse	= nftnl_expr_byteorder_json_parse,
  };
 diff --git a/src/expr/cmp.c b/src/expr/cmp.c
-index 4125689..5c9c8b3 100644
+index f3dd62c..27230a1 100644
 --- a/src/expr/cmp.c
 +++ b/src/expr/cmp.c
 @@ -301,7 +301,7 @@ struct expr_ops expr_ops_cmp = {
@@ -64,7 +64,7 @@ index 4125689..5c9c8b3 100644
  	.json_parse	= nftnl_expr_cmp_json_parse,
  };
 diff --git a/src/expr/counter.c b/src/expr/counter.c
-index 4b5fb3f..092035f 100644
+index 1f818c4..b1f123e 100644
 --- a/src/expr/counter.c
 +++ b/src/expr/counter.c
 @@ -206,7 +206,7 @@ struct expr_ops expr_ops_counter = {
@@ -77,10 +77,10 @@ index 4b5fb3f..092035f 100644
  	.json_parse	= nftnl_expr_counter_json_parse,
  };
 diff --git a/src/expr/ct.c b/src/expr/ct.c
-index 584dffe..55e3d39 100644
+index 7d96df4..2b3fd91 100644
 --- a/src/expr/ct.c
 +++ b/src/expr/ct.c
-@@ -377,7 +377,7 @@ struct expr_ops expr_ops_ct = {
+@@ -381,7 +381,7 @@ struct expr_ops expr_ops_ct = {
  	.get		= nftnl_expr_ct_get,
  	.parse		= nftnl_expr_ct_parse,
  	.build		= nftnl_expr_ct_build,
@@ -89,11 +89,24 @@ index 584dffe..55e3d39 100644
  	.xml_parse	= nftnl_expr_ct_xml_parse,
  	.json_parse	= nftnl_expr_ct_json_parse,
  };
+diff --git a/src/expr/dup.c b/src/expr/dup.c
+index 694db32..c7435c5 100644
+--- a/src/expr/dup.c
++++ b/src/expr/dup.c
+@@ -210,7 +210,7 @@ struct expr_ops expr_ops_dup = {
+ 	.get		= nftnl_expr_dup_get,
+ 	.parse		= nftnl_expr_dup_parse,
+ 	.build		= nftnl_expr_dup_build,
+-	.snprintf	= nftnl_expr_dup_snprintf,
++	.snprintf_	= nftnl_expr_dup_snprintf,
+ 	.xml_parse	= nftnl_expr_dup_xml_parse,
+ 	.json_parse	= nftnl_expr_dup_json_parse,
+ };
 diff --git a/src/expr/dynset.c b/src/expr/dynset.c
-index ec8f2d3..62c01a7 100644
+index c8d97a5..dca0111 100644
 --- a/src/expr/dynset.c
 +++ b/src/expr/dynset.c
-@@ -369,7 +369,7 @@ struct expr_ops expr_ops_dynset = {
+@@ -373,7 +373,7 @@ struct expr_ops expr_ops_dynset = {
  	.get		= nftnl_expr_dynset_get,
  	.parse		= nftnl_expr_dynset_parse,
  	.build		= nftnl_expr_dynset_build,
@@ -103,7 +116,7 @@ index ec8f2d3..62c01a7 100644
  	.json_parse	= nftnl_expr_dynset_json_parse,
  };
 diff --git a/src/expr/exthdr.c b/src/expr/exthdr.c
-index 2e9b0b0..d97d34d 100644
+index 6489a48..e11573a 100644
 --- a/src/expr/exthdr.c
 +++ b/src/expr/exthdr.c
 @@ -312,7 +312,7 @@ struct expr_ops expr_ops_exthdr = {
@@ -115,11 +128,24 @@ index 2e9b0b0..d97d34d 100644
  	.xml_parse	= nftnl_expr_exthdr_xml_parse,
  	.json_parse	= nftnl_expr_exthdr_json_parse,
  };
+diff --git a/src/expr/fwd.c b/src/expr/fwd.c
+index 8fa6d66..60f7e1e 100644
+--- a/src/expr/fwd.c
++++ b/src/expr/fwd.c
+@@ -183,7 +183,7 @@ struct expr_ops expr_ops_fwd = {
+ 	.get		= nftnl_expr_fwd_get,
+ 	.parse		= nftnl_expr_fwd_parse,
+ 	.build		= nftnl_expr_fwd_build,
+-	.snprintf	= nftnl_expr_fwd_snprintf,
++	.snprintf_	= nftnl_expr_fwd_snprintf,
+ 	.xml_parse	= nftnl_expr_fwd_xml_parse,
+ 	.json_parse	= nftnl_expr_fwd_json_parse,
+ };
 diff --git a/src/expr/immediate.c b/src/expr/immediate.c
-index c2fb9ad..921d9db 100644
+index eb2ca0f..9275095 100644
 --- a/src/expr/immediate.c
 +++ b/src/expr/immediate.c
-@@ -326,7 +326,7 @@ struct expr_ops expr_ops_immediate = {
+@@ -327,7 +327,7 @@ struct expr_ops expr_ops_immediate = {
  	.get		= nftnl_expr_immediate_get,
  	.parse		= nftnl_expr_immediate_parse,
  	.build		= nftnl_expr_immediate_build,
@@ -129,10 +155,10 @@ index c2fb9ad..921d9db 100644
  	.json_parse	= nftnl_expr_immediate_json_parse,
  };
 diff --git a/src/expr/limit.c b/src/expr/limit.c
-index e84745d..81a0c61 100644
+index 4bd096e..5c728c2 100644
 --- a/src/expr/limit.c
 +++ b/src/expr/limit.c
-@@ -216,7 +216,7 @@ struct expr_ops expr_ops_limit = {
+@@ -296,7 +296,7 @@ struct expr_ops expr_ops_limit = {
  	.get		= nftnl_expr_limit_get,
  	.parse		= nftnl_expr_limit_parse,
  	.build		= nftnl_expr_limit_build,
@@ -142,7 +168,7 @@ index e84745d..81a0c61 100644
  	.json_parse	= nftnl_expr_limit_json_parse,
  };
 diff --git a/src/expr/log.c b/src/expr/log.c
-index f615d8e..a6f16b0 100644
+index c3dc0a6..620fb54 100644
 --- a/src/expr/log.c
 +++ b/src/expr/log.c
 @@ -341,7 +341,7 @@ struct expr_ops expr_ops_log = {
@@ -155,10 +181,10 @@ index f615d8e..a6f16b0 100644
  	.json_parse	= nftnl_expr_log_json_parse,
  };
 diff --git a/src/expr/lookup.c b/src/expr/lookup.c
-index d911cb6..5c01e94 100644
+index ed32ba6..0fe23af 100644
 --- a/src/expr/lookup.c
 +++ b/src/expr/lookup.c
-@@ -266,7 +266,7 @@ struct expr_ops expr_ops_lookup = {
+@@ -270,7 +270,7 @@ struct expr_ops expr_ops_lookup = {
  	.get		= nftnl_expr_lookup_get,
  	.parse		= nftnl_expr_lookup_parse,
  	.build		= nftnl_expr_lookup_build,
@@ -168,10 +194,10 @@ index d911cb6..5c01e94 100644
  	.json_parse	= nftnl_expr_lookup_json_parse,
  };
 diff --git a/src/expr/masq.c b/src/expr/masq.c
-index 01512b4..d5cb9cb 100644
+index 7296590..c6fe567 100644
 --- a/src/expr/masq.c
 +++ b/src/expr/masq.c
-@@ -180,7 +180,7 @@ struct expr_ops expr_ops_masq = {
+@@ -236,7 +236,7 @@ struct expr_ops expr_ops_masq = {
  	.get		= nftnl_expr_masq_get,
  	.parse		= nftnl_expr_masq_parse,
  	.build		= nftnl_expr_masq_build,
@@ -181,7 +207,7 @@ index 01512b4..d5cb9cb 100644
  	.json_parse	= nftnl_expr_masq_json_parse,
  };
 diff --git a/src/expr/match.c b/src/expr/match.c
-index ddecb43..8a29f1a 100644
+index 2929b43..fda001f 100644
 --- a/src/expr/match.c
 +++ b/src/expr/match.c
 @@ -249,7 +249,7 @@ struct expr_ops expr_ops_match = {
@@ -194,10 +220,10 @@ index ddecb43..8a29f1a 100644
  	.json_parse 	= nftnl_expr_match_json_parse,
  };
 diff --git a/src/expr/meta.c b/src/expr/meta.c
-index 546b225..a9329c8 100644
+index a478a89..3ca97e9 100644
 --- a/src/expr/meta.c
 +++ b/src/expr/meta.c
-@@ -303,7 +303,7 @@ struct expr_ops expr_ops_meta = {
+@@ -304,7 +304,7 @@ struct expr_ops expr_ops_meta = {
  	.get		= nftnl_expr_meta_get,
  	.parse		= nftnl_expr_meta_parse,
  	.build		= nftnl_expr_meta_build,
@@ -207,7 +233,7 @@ index 546b225..a9329c8 100644
  	.json_parse 	= nftnl_expr_meta_json_parse,
  };
 diff --git a/src/expr/nat.c b/src/expr/nat.c
-index 421983f..fe21561 100644
+index 1ae7f77..f4bac92 100644
 --- a/src/expr/nat.c
 +++ b/src/expr/nat.c
 @@ -412,7 +412,7 @@ struct expr_ops expr_ops_nat = {
@@ -220,10 +246,10 @@ index 421983f..fe21561 100644
  	.json_parse	= nftnl_expr_nat_json_parse,
  };
 diff --git a/src/expr/payload.c b/src/expr/payload.c
-index be10663..4031782 100644
+index b4fd9c5..b4720fd 100644
 --- a/src/expr/payload.c
 +++ b/src/expr/payload.c
-@@ -293,7 +293,7 @@ struct expr_ops expr_ops_payload = {
+@@ -343,7 +343,7 @@ struct expr_ops expr_ops_payload = {
  	.get		= nftnl_expr_payload_get,
  	.parse		= nftnl_expr_payload_parse,
  	.build		= nftnl_expr_payload_build,
@@ -233,7 +259,7 @@ index be10663..4031782 100644
  	.json_parse	= nftnl_expr_payload_json_parse,
  };
 diff --git a/src/expr/queue.c b/src/expr/queue.c
-index 21126ed..b430e39 100644
+index a2e6ed5..f847fa4 100644
 --- a/src/expr/queue.c
 +++ b/src/expr/queue.c
 @@ -251,7 +251,7 @@ struct expr_ops expr_ops_queue = {
@@ -246,7 +272,7 @@ index 21126ed..b430e39 100644
  	.json_parse	= nftnl_expr_queue_json_parse,
  };
 diff --git a/src/expr/redir.c b/src/expr/redir.c
-index b8fb1fe..fa309fc 100644
+index c6eedfb..55764bd 100644
 --- a/src/expr/redir.c
 +++ b/src/expr/redir.c
 @@ -250,7 +250,7 @@ struct expr_ops expr_ops_redir = {
@@ -259,7 +285,7 @@ index b8fb1fe..fa309fc 100644
  	.json_parse	= nftnl_expr_redir_json_parse,
  };
 diff --git a/src/expr/reject.c b/src/expr/reject.c
-index 979817a..6b1f773 100644
+index 1953328..dcf9883 100644
 --- a/src/expr/reject.c
 +++ b/src/expr/reject.c
 @@ -207,7 +207,7 @@ struct expr_ops expr_ops_reject = {
@@ -272,7 +298,7 @@ index 979817a..6b1f773 100644
  	.json_parse	= nftnl_expr_reject_json_parse,
  };
 diff --git a/src/expr/target.c b/src/expr/target.c
-index cbbee60..62ecf4a 100644
+index 68a7d8a..f618d84 100644
 --- a/src/expr/target.c
 +++ b/src/expr/target.c
 @@ -250,7 +250,7 @@ struct expr_ops expr_ops_target = {
@@ -285,10 +311,10 @@ index cbbee60..62ecf4a 100644
  	.json_parse	= nftnl_expr_target_json_parse,
  };
 diff --git a/src/rule.c b/src/rule.c
-index 0fb27ed..cfc75f5 100644
+index 8ee8648..d55ef2c 100644
 --- a/src/rule.c
 +++ b/src/rule.c
-@@ -765,7 +765,7 @@ static int nftnl_rule_snprintf_json(char *buf, size_t size, struct nftnl_rule *r
+@@ -775,7 +775,7 @@ static int nftnl_rule_snprintf_json(char *buf, size_t size,
  			       "{\"type\":\"%s\",", expr->ops->name);
  		SNPRINTF_BUFFER_SIZE(ret, size, len, offset);
  
