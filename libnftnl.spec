@@ -48,6 +48,7 @@ sed -i 's!examples/Makefile!!g' configure.ac
 sed -i 's!tests/Makefile!!g' configure.ac
 
 %build
+export CC=gcc
 %configure --disable-static
 %make
 
