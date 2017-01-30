@@ -4,13 +4,13 @@
 
 Summary:	Userspace library for handling of netfilter netlink messages
 Name:		libnftnl
-Version:	1.0.6
+Version:	1.0.7
 Release:	1
 Group:		System/Libraries
 License:	GPLv2
 URL:		http://netfilter.org/projects/libnftnl/index.html
 Source0:	http://netfilter.org/projects/libnftnl/files/libnftnl-%{version}.tar.bz2
-Patch0:		libnftnl-1.0.5-sprintf.patch
+Patch0:		libnftnl-1.0.7-clang.patch
 BuildRequires:	pkgconfig(libmnl)
 
 %description
