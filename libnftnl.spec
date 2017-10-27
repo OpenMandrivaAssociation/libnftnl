@@ -1,4 +1,4 @@
-%define major 4
+%define major 7
 %define libname %mklibname nftnl %{major}
 %define libnamedevel %mklibname nftnl -d
 
