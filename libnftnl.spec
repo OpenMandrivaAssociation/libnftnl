@@ -1,16 +1,16 @@
-%define major 4
+%define major 7
 %define libname %mklibname nftnl %{major}
 %define libnamedevel %mklibname nftnl -d
 
 Summary:	Userspace library for handling of netfilter netlink messages
 Name:		libnftnl
-Version:	1.0.7
+Version:	1.0.8
 Release:	1
 Group:		System/Libraries
 License:	GPLv2
 URL:		http://netfilter.org/projects/libnftnl/index.html
 Source0:	http://netfilter.org/projects/libnftnl/files/libnftnl-%{version}.tar.bz2
-Patch0:		libnftnl-1.0.7-clang.patch
+#Patch0:		libnftnl-1.0.7-clang.patch
 BuildRequires:	pkgconfig(libmnl)
 
 %description
