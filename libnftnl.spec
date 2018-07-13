@@ -4,7 +4,7 @@
 
 Summary:	Userspace library for handling of netfilter netlink messages
 Name:		libnftnl
-Version:	1.0.8
+Version:	1.1.1
 Release:	1
 Group:		System/Libraries
 License:	GPLv2
@@ -12,6 +12,7 @@ URL:		http://netfilter.org/projects/libnftnl/index.html
 Source0:	http://netfilter.org/projects/libnftnl/files/libnftnl-%{version}.tar.bz2
 #Patch0:		libnftnl-1.0.7-clang.patch
 BuildRequires:	pkgconfig(libmnl)
+BuildRequires:	pkgconfig(jansson)
 
 %description
 libnftnl is a userspace library providing a low-level netlink programming
@@ -19,17 +20,17 @@ interface (API) to the in-kernel nf_tables subsystem. The library libnftnl has
 been previously known as libnftables. This library is currently used by
 nftables.
 
-%package -n	%{libname}
+%package -n %{libname}
 Summary:	Main library for %{name}
 Group:		System/Libraries
 
-%description -n	%{libname}
+%description -n %{libname}
 libnftnl is a userspace library providing a low-level netlink programming
 interface (API) to the in-kernel nf_tables subsystem. The library libnftnl has
 been previously known as libnftables. This library is currently used by
 nftables.
 
-%package -n	%{libnamedevel}
+%package -n %{libnamedevel}
 Summary:	Development files for %{name}
 Group:		Development/C
 Provides:	libnftnl-devel = %{version}-%{release}
