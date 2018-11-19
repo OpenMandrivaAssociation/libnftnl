@@ -4,8 +4,8 @@
 
 Summary:	Userspace library for handling of netfilter netlink messages
 Name:		libnftnl
-Version:	1.1.1
-Release:	2
+Version:	1.1.2
+Release:	1
 Group:		System/Libraries
 License:	GPLv2
 URL:		http://netfilter.org/projects/libnftnl/index.html
@@ -40,8 +40,8 @@ Requires:	%{libname} >= %{version}-%{release}
 This package contains the development files for %{name}.
 
 %prep
-%setup -q
-%apply_patches
+%autosetup -p1
+
 rm -rf examples
 sed -i 's!examples!!g' Makefile.am
 sed -i 's!tests!!g' Makefile.am
@@ -51,10 +51,10 @@ sed -i 's!tests/Makefile!!g' configure.ac
 %build
 export CC=gcc
 %configure --disable-static
-%make
+%make_build
 
 %install
-%makeinstall_std
+%make_install
 
 rm -f %{buildroot}%{_libdir}/*.la
 
