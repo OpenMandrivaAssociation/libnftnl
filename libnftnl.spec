@@ -49,6 +49,9 @@ sed -i 's!examples/Makefile!!g' configure.ac
 sed -i 's!tests/Makefile!!g' configure.ac
 
 %build
+# (tpg) 2019-05-29 
+# BUILDSTDERR: object.c:372:19: error: no member named '__builtin___snprintf_chk' in 'struct obj_ops'
+export CC=gcc
 %configure --disable-static
 %make_build
 
