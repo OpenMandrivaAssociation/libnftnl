@@ -4,7 +4,7 @@
 
 Summary:	Userspace library for handling of netfilter netlink messages
 Name:		libnftnl
-Version:	1.1.2
+Version:	1.1.3
 Release:	1
 Group:		System/Libraries
 License:	GPLv2
@@ -49,7 +49,6 @@ sed -i 's!examples/Makefile!!g' configure.ac
 sed -i 's!tests/Makefile!!g' configure.ac
 
 %build
-export CC=gcc
 %configure --disable-static
 %make_build
 
