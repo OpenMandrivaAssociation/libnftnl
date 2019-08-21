@@ -10,7 +10,8 @@ Group:		System/Libraries
 License:	GPLv2
 URL:		http://netfilter.org/projects/libnftnl/index.html
 Source0:	http://netfilter.org/projects/libnftnl/files/libnftnl-%{version}.tar.bz2
-#Patch0:		libnftnl-1.0.7-clang.patch
+Patch0:		0001-Move-exports-before-symbol-definition.patch
+Patch1:		0002-avoid-naming-local-function-as-one-of-printf-family.patch
 BuildRequires:	pkgconfig(libmnl)
 BuildRequires:	pkgconfig(jansson)
 
@@ -51,7 +52,7 @@ sed -i 's!tests/Makefile!!g' configure.ac
 %build
 # (tpg) 2019-05-29 
 # BUILDSTDERR: object.c:372:19: error: no member named '__builtin___snprintf_chk' in 'struct obj_ops'
-export CC=gcc
+#export CC=gcc
 %configure --disable-static
 %make_build
 
