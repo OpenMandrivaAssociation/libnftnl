@@ -612,3 +612,14 @@ index c0bb5ba..953c08c 100644
 -	.snprintf	= nftnl_obj_ct_expect_snprintf,
 +	.snprintf_	= nftnl_obj_ct_expect_snprintf,
  };
+diff --git a/src/obj/synproxy.c b/src/obj/synproxy.c
+index 56ebc85..ea01a28 100644
+--- a/src/obj/synproxy.c
++++ b/src/obj/synproxy.c
+@@ -157,5 +157,5 @@ struct obj_ops obj_ops_synproxy = {
+ 	.get		= nftnl_obj_synproxy_get,
+ 	.parse		= nftnl_obj_synproxy_parse,
+ 	.build		= nftnl_obj_synproxy_build,
+-	.snprintf	= nftnl_obj_synproxy_snprintf,
++	.snprintf_	= nftnl_obj_synproxy_snprintf,
+ };

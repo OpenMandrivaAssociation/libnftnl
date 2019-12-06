@@ -1,0 +1,30 @@
+From ba1b02594e8d05e4c791925a50f9309f89b55c80 Mon Sep 17 00:00:00 2001
+From: Phil Sutter <phil@nwl.cc>
+Date: Mon, 2 Dec 2019 22:57:40 +0100
+Subject: [libnftnl PATCH] flowtable: Fix memleak in error path of
+ nftnl_flowtable_parse_devs()
+
+In error case, allocated dev_array is not freed.
+
+Fixes: 7f99639dd9217 ("flowtable: device array dynamic allocation")
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+Acked-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ src/flowtable.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/flowtable.c b/src/flowtable.c
+index 324e80f7e6ad6..db319434b51c0 100644
+--- a/src/flowtable.c
++++ b/src/flowtable.c
+@@ -419,6 +419,7 @@ static int nftnl_flowtable_parse_devs(struct nlattr *nest,
+ err:
+ 	while (len--)
+ 		xfree(dev_array[len]);
++	xfree(dev_array);
+ 	return -1;
+ }
+ 
+-- 
+2.24.0
+

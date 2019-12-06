@@ -1,0 +1,52 @@
+From 835d645f4052551c5c1829c37a07c882f2260f65 Mon Sep 17 00:00:00 2001
+From: Phil Sutter <phil@nwl.cc>
+Date: Mon, 2 Dec 2019 23:08:07 +0100
+Subject: [libnftnl PATCH] flowtable: Correctly check realloc() call
+
+If realloc() fails, it returns NULL but the original pointer is
+untouchted and therefore still has to be freed. Unconditionally
+overwriting the old pointer is therefore a bad idea, use a temporary
+variable instead.
+
+Fixes: 7f99639dd9217 ("flowtable: device array dynamic allocation")
+Signed-off-by: Phil Sutter <phil@nwl.cc>
+Acked-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ src/flowtable.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
+
+diff --git a/src/flowtable.c b/src/flowtable.c
+index db319434b51c0..9ba3b6d9a3404 100644
+--- a/src/flowtable.c
++++ b/src/flowtable.c
+@@ -388,7 +388,7 @@ static int nftnl_flowtable_parse_hook_cb(const struct nlattr *attr, void *data)
+ static int nftnl_flowtable_parse_devs(struct nlattr *nest,
+ 				      struct nftnl_flowtable *c)
+ {
+-	const char **dev_array;
++	const char **dev_array, **tmp;
+ 	int len = 0, size = 8;
+ 	struct nlattr *attr;
+ 
+@@ -401,14 +401,13 @@ static int nftnl_flowtable_parse_devs(struct nlattr *nest,
+ 			goto err;
+ 		dev_array[len++] = strdup(mnl_attr_get_str(attr));
+ 		if (len >= size) {
+-			dev_array = realloc(dev_array,
+-					    size * 2 * sizeof(char *));
+-			if (!dev_array)
++			tmp = realloc(dev_array, size * 2 * sizeof(char *));
++			if (!tmp)
+ 				goto err;
+ 
+ 			size *= 2;
+-			memset(&dev_array[len], 0,
+-			       (size - len) * sizeof(char *));
++			memset(&tmp[len], 0, (size - len) * sizeof(char *));
++			dev_array = tmp;
+ 		}
+ 	}
+ 
+-- 
+2.24.0
+

@@ -4,14 +4,19 @@
 
 Summary:	Userspace library for handling of netfilter netlink messages
 Name:		libnftnl
-Version:	1.1.4
+Version:	1.1.5
 Release:	1
 Group:		System/Libraries
 License:	GPLv2
 URL:		http://netfilter.org/projects/libnftnl/index.html
 Source0:	http://netfilter.org/projects/libnftnl/files/libnftnl-%{version}.tar.bz2
-Patch0:		0001-Move-exports-before-symbol-definition.patch
-Patch1:		0002-avoid-naming-local-function-as-one-of-printf-family.patch
+Patch1: 0001-tests-flowtable-Don-t-check-NFTNL_FLOWTABLE_SIZE.patch
+Patch2: 0002-flowtable-Fix-memleak-in-error-path-of-nftnl_flowtab.patch
+Patch3: 0003-chain-Fix-memleak-in-error-path-of-nftnl_chain_parse.patch
+Patch4: 0004-flowtable-Correctly-check-realloc-call.patch
+Patch5: 0005-chain-Correctly-check-realloc-call.patch
+Patch6: 0002-avoid-naming-local-function-as-one-of-printf-family.patch
+
 BuildRequires:	pkgconfig(libmnl)
 BuildRequires:	pkgconfig(jansson)
 
@@ -50,16 +55,20 @@ sed -i 's!examples/Makefile!!g' configure.ac
 sed -i 's!tests/Makefile!!g' configure.ac
 
 %build
-# (tpg) 2019-05-29 
-# BUILDSTDERR: object.c:372:19: error: no member named '__builtin___snprintf_chk' in 'struct obj_ops'
-#export CC=gcc
-%configure --disable-static
+%configure --disable-static --disable-silent-rules --with-json-parsing
 %make_build
 
 %install
 %make_install
 
 rm -f %{buildroot}%{_libdir}/*.la
+
+%check
+make %{?_smp_mflags} check
+# JSON parsing is broken on big endian, causing tests to fail. Fixes awaiting
+# upstream acceptance: https://marc.info/?l=netfilter-devel&m=152968610931720&w=2
+#cd tests
+#sh ./test-script.sh
 
 %files -n %{libname}
 %{_libdir}/*.so.%{major}*
