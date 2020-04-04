@@ -4,18 +4,13 @@
 
 Summary:	Userspace library for handling of netfilter netlink messages
 Name:		libnftnl
-Version:	1.1.5
+Version:	1.1.6
 Release:	1
 Group:		System/Libraries
 License:	GPLv2
 URL:		http://netfilter.org/projects/libnftnl/index.html
 Source0:	http://netfilter.org/projects/libnftnl/files/libnftnl-%{version}.tar.bz2
-Patch1: 0001-tests-flowtable-Don-t-check-NFTNL_FLOWTABLE_SIZE.patch
-Patch2: 0002-flowtable-Fix-memleak-in-error-path-of-nftnl_flowtab.patch
-Patch3: 0003-chain-Fix-memleak-in-error-path-of-nftnl_chain_parse.patch
-Patch4: 0004-flowtable-Correctly-check-realloc-call.patch
-Patch5: 0005-chain-Correctly-check-realloc-call.patch
-Patch6: 0002-avoid-naming-local-function-as-one-of-printf-family.patch
+Patch0:		https://github.com/openembedded/meta-openembedded/raw/master/meta-networking/recipes-filter/libnftnl/libnftnl/0001-avoid-naming-local-function-as-one-of-printf-family.patch
 
 BuildRequires:	pkgconfig(libmnl)
 BuildRequires:	pkgconfig(jansson)
