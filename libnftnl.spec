@@ -15,7 +15,7 @@
 Summary:	Userspace library for handling of netfilter netlink messages
 Name:		libnftnl
 Version:	1.2.0
-Release:	1
+Release:	2
 Group:		System/Libraries
 License:	GPLv2
 URL:		http://netfilter.org/projects/libnftnl/index.html
@@ -26,7 +26,6 @@ Source0:	http://netfilter.org/projects/libnftnl/files/libnftnl-%{version}.tar.bz
 # sed -i -e "s,\->snprintf,\->snprintf_,g" $(grep -rl "\->snprintf" *)
 Patch0:		https://github.com/openembedded/meta-openembedded/raw/master/meta-networking/recipes-filter/libnftnl/libnftnl/0001-avoid-naming-local-function-as-one-of-printf-family.patch
 BuildRequires:	pkgconfig(libmnl)
-BuildRequires:	pkgconfig(jansson)
 %if %{with compat32}
 BuildRequires:	devel(libmnl)
 %endif
@@ -100,7 +99,7 @@ cd ..
 %endif
 mkdir build
 cd build
-%configure --with-json-parsing
+%configure
 
 %build
 %if %{with compat32}
@@ -119,10 +118,6 @@ cd build
 make -C build32 check
 %endif
 make -C build %{?_smp_mflags} check
-# JSON parsing is broken on big endian, causing tests to fail. Fixes awaiting
-# upstream acceptance: https://marc.info/?l=netfilter-devel&m=152968610931720&w=2
-#cd tests
-#sh ./test-script.sh
 
 %files -n %{libname}
 %{_libdir}/*.so.%{major}*
