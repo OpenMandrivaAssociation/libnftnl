@@ -576,3 +576,14 @@ diff -Naur a/src/object.c b/src/object.c
  		SNPRINTF_BUFFER_SIZE(ret, remain, offset);
  	}
  	ret = snprintf(buf + offset, remain, "]");
+diff --git a/src/expr/last.c b/src/expr/last.c
+index e2a60c4..2f75464 100644
+--- a/src/expr/last.c
++++ b/src/expr/last.c
+@@ -134,5 +134,5 @@ struct expr_ops expr_ops_last = {
+ 	.get		= nftnl_expr_last_get,
+ 	.parse		= nftnl_expr_last_parse,
+ 	.build		= nftnl_expr_last_build,
+-	.snprintf	= nftnl_expr_last_snprintf,
++	.snprintf_	= nftnl_expr_last_snprintf,
+ };
