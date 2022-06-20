@@ -95,7 +95,12 @@ autoconf
 %if %{with compat32}
 mkdir build32
 cd build32
-%configure32
+%configure32 || :
+if ! [ -e Makefile ]; then
+	echo "Configure failed. config.log:"
+	cat config.log
+	exit 1
+fi
 cd ..
 %endif
 mkdir build
