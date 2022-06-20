@@ -28,6 +28,7 @@ Patch0:		https://github.com/openembedded/meta-openembedded/raw/master/meta-netwo
 BuildRequires:	pkgconfig(libmnl)
 %if %{with compat32}
 BuildRequires:	devel(libmnl)
+BuildRequires:	libc6
 %endif
 
 %description
