@@ -14,7 +14,7 @@
 
 Summary:	Userspace library for handling of netfilter netlink messages
 Name:		libnftnl
-Version:	1.2.2
+Version:	1.2.3
 Release:	1
 Group:		System/Libraries
 License:	GPLv2
@@ -24,7 +24,7 @@ Source0:	http://netfilter.org/projects/libnftnl/files/libnftnl-%{version}.tar.bz
 # sed -i -e "s,(\*snprintf),(\*snprintf_),g" $(grep -rl "(*snprintf)" *)
 # sed -i -e "s,^\t.snprintf\t\=,\t.snprintf_\t\=,g" $(grep -rl "\.snprintf" *)
 # sed -i -e "s,\->snprintf,\->snprintf_,g" $(grep -rl "\->snprintf" *)
-Patch0:		https://github.com/openembedded/meta-openembedded/raw/master/meta-networking/recipes-filter/libnftnl/libnftnl/0001-avoid-naming-local-function-as-one-of-printf-family.patch
+# Patch0:		https://github.com/openembedded/meta-openembedded/raw/master/meta-networking/recipes-filter/libnftnl/libnftnl/0001-avoid-naming-local-function-as-one-of-printf-family.patch
 BuildRequires:	pkgconfig(libmnl)
 %if %{with compat32}
 BuildRequires:	devel(libmnl)
