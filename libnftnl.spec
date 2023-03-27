@@ -1,35 +1,26 @@
-# libnftnl is used by iptables, iptables is used by systemd,
-# libsystemd is used by wine
-%ifarch %{x86_64}
-%bcond_without compat32
-%else
-%bcond_with compat32
-%endif
-
 %define major 11
 %define libname %mklibname nftnl %{major}
 %define libnamedevel %mklibname nftnl -d
-%define lib32name libnftnl%{major}
-%define lib32namedevel libnftnl-devel
+
+# (tpg) optimize it a bit
+%global optflags %{optflags} -Oz
 
 Summary:	Userspace library for handling of netfilter netlink messages
 Name:		libnftnl
-Version:	1.2.4
+Version:	1.2.5
 Release:	1
 Group:		System/Libraries
 License:	GPLv2
 URL:		http://netfilter.org/projects/libnftnl/index.html
-Source0:	http://netfilter.org/projects/libnftnl/files/libnftnl-%{version}.tar.bz2
+Source0:	http://netfilter.org/projects/libnftnl/files/libnftnl-%{version}.tar.xz
 # (tpg) rediff below patch with these
 # sed -i -e "s,(\*snprintf),(\*snprintf_),g" $(grep -rl "(*snprintf)" *)
 # sed -i -e "s,^\t.snprintf\t\=,\t.snprintf_\t\=,g" $(grep -rl "\.snprintf" *)
 # sed -i -e "s,\->snprintf,\->snprintf_,g" $(grep -rl "\->snprintf" *)
 # Patch0:		https://github.com/openembedded/meta-openembedded/raw/master/meta-networking/recipes-filter/libnftnl/libnftnl/0001-avoid-naming-local-function-as-one-of-printf-family.patch
 BuildRequires:	pkgconfig(libmnl)
-%if %{with compat32}
-BuildRequires:	devel(libmnl)
-BuildRequires:	libc6
-%endif
+Obsoletes:	libnftnl11 < 1.2.5-1
+Obsoletes:	libnftnl-devel < 1.2.5-1
 
 %description
 libnftnl is a userspace library providing a low-level netlink programming
@@ -56,27 +47,6 @@ Requires:	%{libname} >= %{version}-%{release}
 %description -n %{libnamedevel}
 This package contains the development files for %{name}.
 
-%if %{with compat32}
-%package -n %{lib32name}
-Summary:	Main library for %{name} (32-bit)
-Group:		System/Libraries
-
-%description -n %{lib32name}
-libnftnl is a userspace library providing a low-level netlink programming
-interface (API) to the in-kernel nf_tables subsystem. The library libnftnl has
-been previously known as libnftables. This library is currently used by
-nftables.
-
-%package -n %{lib32namedevel}
-Summary:	Development files for %{name} (32-bit)
-Group:		Development/C
-Requires:	%{libnamedevel} = %{EVRD}
-Requires:	%{lib32name} = %{EVRD}
-
-%description -n %{lib32namedevel}
-This package contains the development files for %{name}.
-%endif
-
 %prep
 %autosetup -p1
 
@@ -86,44 +56,20 @@ sed -i 's!tests!!g' Makefile.am
 sed -i 's!examples/Makefile!!g' configure.ac
 sed -i 's!tests/Makefile!!g' configure.ac
 
-export CONFIGURE_TOP="$(pwd)"
 aclocal
 autoheader
 automake -a
 autoconf
 
-%if %{with compat32}
-mkdir build32
-cd build32
-%configure32 || :
-if ! [ -e Makefile ]; then
-	echo "Configure failed. config.log:"
-	cat config.log
-	exit 1
-fi
-cd ..
-%endif
-mkdir build
-cd build
-%configure
-
 %build
-%if %{with compat32}
-%make_build -C build32
-%endif
-%make_build -C build
+%configure
+%make_build
 
 %install
-%if %{with compat32}
-%make_install -C build32
-%endif
-%make_install -C build
+%make_install
 
 %check
-%if %{with compat32}
-make -C build32 check
-%endif
-make -C build %{?_smp_mflags} check
+make %{?_smp_mflags} check
 
 %files -n %{libname}
 %{_libdir}/*.so.%{major}*
@@ -132,12 +78,3 @@ make -C build %{?_smp_mflags} check
 %{_includedir}/libnftnl
 %{_libdir}/*.so
 %{_libdir}/pkgconfig/libnftnl.pc
-
-%if %{with compat32}
-%files -n %{lib32name}
-%{_prefix}/lib/*.so.%{major}*
-
-%files -n %{lib32namedevel}
-%{_prefix}/lib/*.so
-%{_prefix}/lib/pkgconfig/libnftnl.pc
-%endif
