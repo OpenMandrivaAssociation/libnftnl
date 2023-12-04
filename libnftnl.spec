@@ -4,6 +4,7 @@
 
 # (tpg) optimize it a bit
 %global optflags %{optflags} -Oz
+%global build_ldflags %{build_ldflags} -Wl,--undefined-version
 
 Summary:	Userspace library for handling of netfilter netlink messages
 Name:		libnftnl
