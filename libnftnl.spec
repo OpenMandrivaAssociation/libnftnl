@@ -12,7 +12,7 @@ Version:	1.2.7
 Release:	1
 Group:		System/Libraries
 License:	GPLv2
-URL:		http://netfilter.org/projects/libnftnl/index.html
+URL:		https://netfilter.org/projects/libnftnl/index.html
 Source0:	http://netfilter.org/projects/libnftnl/files/libnftnl-%{version}.tar.xz
 # (tpg) rediff below patch with these
 # sed -i -e "s,(\*snprintf),(\*snprintf_),g" $(grep -rl "(*snprintf)" *)
