@@ -19,6 +19,11 @@ Source0:	http://netfilter.org/projects/libnftnl/files/libnftnl-%{version}.tar.xz
 # sed -i -e "s,^\t.snprintf\t\=,\t.snprintf_\t\=,g" $(grep -rl "\.snprintf" *)
 # sed -i -e "s,\->snprintf,\->snprintf_,g" $(grep -rl "\->snprintf" *)
 # Patch0:		https://github.com/openembedded/meta-openembedded/raw/master/meta-networking/recipes-filter/libnftnl/libnftnl/0001-avoid-naming-local-function-as-one-of-printf-family.patch
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libtool-base
+BuildRequires:	slibtool
+BuildRequires:	make
 BuildRequires:	pkgconfig(libmnl)
 Obsoletes:	libnftnl11 < 1.2.5-1
 Obsoletes:	libnftnl-devel < 1.2.5-1
