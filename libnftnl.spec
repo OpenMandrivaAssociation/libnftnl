@@ -8,7 +8,7 @@
 
 Summary:	Userspace library for handling of netfilter netlink messages
 Name:		libnftnl
-Version:	1.2.8
+Version:	1.3.1
 Release:	1
 Group:		System/Libraries
 License:	GPLv2
